@@ -1,0 +1,13 @@
+requests
+python-dotenv
+kafka-python
+pyspark==3.5.0
+delta-spark==3.0.0
+pandas
+dbt-duckdb
+mlflow
+scikit-learn
+fastapi
+uvicorn
+streamlit
+plotly
