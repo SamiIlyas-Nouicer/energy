@@ -62,3 +62,45 @@ df = df.reset_index(drop=True)
 
 
 print(df[["consumption_mw", "nuclear_mw", "solar_mw", "wind_mw", "co2_rate_gco2_per_kwh"]].describe().round(1))
+
+import json
+from minio import Minio
+from io import BytesIO
+
+# --- MinIO Configuration ---
+MINIO_URL = "localhost:9000"
+MINIO_ACCESS_KEY = "minioadmin"
+MINIO_SECRET_KEY = "minioadmin"
+BUCKET_NAME = "energy-lake"
+
+s3 = Minio(MINIO_URL, access_key=MINIO_ACCESS_KEY, secret_key=MINIO_SECRET_KEY, secure=False)
+
+# Ensure the bucket exists
+if not s3.bucket_exists(BUCKET_NAME):
+    s3.make_bucket(BUCKET_NAME)
+
+print("🚀 Starting upload to MinIO bronze/historical...")
+
+# Group by Year and Month for efficient partitioning
+for (year, month), group in df.groupby([df.timestamp.dt.year, df.timestamp.dt.month]):
+    # Hive-style partitioning path
+    path = f"bronze/historical/year={int(year)}/month={int(month):02d}/historical_batch.json"
+    
+    # Convert this month's data to JSON (orient='records' matches your API format)
+    # We use ISO format for the timestamp strings
+    content_list = group.copy()
+    content_list['timestamp'] = content_list['timestamp'].dt.strftime('%Y-%m-%dT%H:%M:%S')
+    json_data = content_list.to_dict(orient='records')
+    content = json.dumps(json_data).encode('utf-8')
+    
+    # Upload to MinIO
+    s3.put_object(
+        BUCKET_NAME, 
+        path, 
+        BytesIO(content), 
+        len(content), 
+        content_type="application/json"
+    )
+    print(f"📥 Uploaded: {path}")
+
+print("✅ Day 2 Historical Backfill Complete!")
