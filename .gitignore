@@ -7,3 +7,12 @@ data/raw/*
 target/
 dbt_packages/
 .DS_Store
+*.deb
+*.deb
+*.zip
+src/data/silver_export/
+src/data/gold.duckdb
+src/data/raw/*.zip
+__pycache__/
+.venv/
+*.pyc
