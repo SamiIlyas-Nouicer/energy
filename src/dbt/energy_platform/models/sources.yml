@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: silver
+    description: "Silver layer exported from Delta Lake"
+    meta:
+      external_location: "/home/sami/Desktop/energy/src/data/silver_export"
+    tables:
+      - name: energy_with_weather
+        description: "Generation + weather joined, 30-min grain"

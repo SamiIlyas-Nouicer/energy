@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: stg_energy
+    description: "Cleaned staging layer from silver export"
+    columns:
+      - name: timestamp
+        tests:
+          - not_null
+
+  - name: hourly_energy_mix
+    description: "Hourly energy mix with renewable share and 7-day rolling average"
+    columns:
+      - name: hour
+        tests:
+          - not_null
+
+  - name: daily_consumption_summary
+    description: "Daily consumption aggregates with peak and temperature"
+    columns:
+      - name: date
+        tests:
+          - not_null
+          - unique
+
+  - name: co2_intensity
+    description: "Per-slot CO2 intensity using RTE emission factors"
+    columns:
+      - name: timestamp
+        tests:
+          - not_null
+
+  - name: regional_weekly
+    description: "Weekly per-capita consumption by French region"
+    columns:
+      - name: week_start
+        tests:
+          - not_null

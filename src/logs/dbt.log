@@ -1,0 +1,73 @@
+[0m01:34:37.443532 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8f8e778980>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8f8d8ebd90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8f8d8eb9d0>]}
+
+
+============================== 01:34:37.446584 | d594818a-1dd2-482f-9562-02eff8a08681 ==============================
+[0m01:34:37.446584 [info ] [MainThread]: Running with dbt=1.11.8
+[0m01:34:37.447092 [debug] [MainThread]: running dbt with arguments {'invocation_command': 'dbt debug', 'cache_selected_only': 'False', 'version_check': 'True', 'fail_fast': 'False', 'introspect': 'True', 'warn_error': 'None', 'log_format': 'default', 'partial_parse': 'True', 'quiet': 'False', 'indirect_selection': 'eager', 'write_json': 'True', 'use_colors': 'True', 'static_parser': 'True', 'profiles_dir': '/home/sami/.dbt', 'use_experimental_parser': 'False', 'no_print': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'printer_width': '80', 'empty': 'None', 'log_cache_events': 'False', 'send_anonymous_usage_stats': 'True', 'log_path': 'logs', 'target_path': 'None', 'debug': 'False'}
+[0m01:34:37.455955 [info ] [MainThread]: dbt version: 1.11.8
+[0m01:34:37.456389 [info ] [MainThread]: python version: 3.13.5
+[0m01:34:37.456709 [info ] [MainThread]: python path: /home/sami/Desktop/energy/.venv/bin/python3
+[0m01:34:37.457006 [info ] [MainThread]: os info: Linux-6.12.74+deb13+1-amd64-x86_64-with-glibc2.41
+[0m01:34:37.568911 [info ] [MainThread]: Using profiles dir at /home/sami/.dbt
+[0m01:34:37.569448 [info ] [MainThread]: Using profiles.yml file at /home/sami/.dbt/profiles.yml
+[0m01:34:37.569766 [info ] [MainThread]: Using dbt_project.yml file at /home/sami/Desktop/energy/src/dbt_project.yml
+[0m01:34:37.571882 [info ] [MainThread]: adapter type: duckdb
+[0m01:34:37.572560 [info ] [MainThread]: adapter version: 1.10.1
+[0m01:34:37.572970 [info ] [MainThread]: Configuration:
+[0m01:34:37.573349 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m01:34:37.573671 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m01:34:37.573993 [info ] [MainThread]: Required dependencies:
+[0m01:34:37.574335 [debug] [MainThread]: Executing "git --help"
+[0m01:34:37.576027 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m01:34:37.576481 [debug] [MainThread]: STDERR: "b''"
+[0m01:34:37.576771 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m01:34:37.577103 [info ] [MainThread]: Connection:
+[0m01:34:37.577420 [info ] [MainThread]:   database: gold
+[0m01:34:37.577718 [info ] [MainThread]:   schema: main
+[0m01:34:37.578008 [info ] [MainThread]:   path: /home/sami/Desktop/energy/src/data/gold.duckdb
+[0m01:34:37.578300 [info ] [MainThread]:   config_options: None
+[0m01:34:37.578589 [info ] [MainThread]:   extensions: None
+[0m01:34:37.578878 [info ] [MainThread]:   settings: {}
+[0m01:34:37.579165 [info ] [MainThread]:   external_root: .
+[0m01:34:37.579450 [info ] [MainThread]:   use_credential_provider: None
+[0m01:34:37.579738 [info ] [MainThread]:   attach: None
+[0m01:34:37.580024 [info ] [MainThread]:   filesystems: None
+[0m01:34:37.580309 [info ] [MainThread]:   remote: None
+[0m01:34:37.580596 [info ] [MainThread]:   plugins: None
+[0m01:34:37.580883 [info ] [MainThread]:   disable_transactions: False
+[0m01:34:37.581304 [info ] [MainThread]: Registered adapter: duckdb=1.10.1
+[0m01:34:37.627181 [debug] [MainThread]: Acquiring new duckdb connection 'debug'
+[0m01:34:37.646582 [debug] [MainThread]: Using duckdb connection "debug"
+[0m01:34:37.647005 [debug] [MainThread]: On debug: select 1 as id
+[0m01:34:37.647296 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m01:34:37.663515 [debug] [MainThread]: SQL status: OK in 0.016 seconds
+[0m01:34:37.664437 [debug] [MainThread]: On debug: Close
+[0m01:34:37.664789 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m01:34:37.665117 [info ] [MainThread]: [31m1 check failed:[0m
+[0m01:34:37.665409 [info ] [MainThread]: Project loading failed for the following reason:
+ project path </home/sami/Desktop/energy/src/dbt_project.yml> not found
+
+[0m01:34:37.666405 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": false, "command_wall_clock_time": 0.28202, "process_in_blocks": "0", "process_kernel_time": 0.1357, "process_mem_max_rss": "150584", "process_out_blocks": "40", "process_user_time": 1.508675}
+[0m01:34:37.666887 [debug] [MainThread]: Command `dbt debug` failed at 01:34:37.666783 after 0.28 seconds
+[0m01:34:37.667216 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m01:34:37.667615 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8f8d6a7950>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8f85901d90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f8f8d75bdf0>]}
+[0m01:34:37.668018 [debug] [MainThread]: Flushing usage events
+[0m01:34:38.060009 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m01:54:44.926457 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f6660b80980>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f66604147d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f665fb5bed0>]}
+
+
+============================== 01:54:44.929607 | 66bf60a9-9da0-4431-9547-fab76a82b9bb ==============================
+[0m01:54:44.929607 [info ] [MainThread]: Running with dbt=1.11.8
+[0m01:54:44.930116 [debug] [MainThread]: running dbt with arguments {'write_json': 'True', 'fail_fast': 'False', 'use_experimental_parser': 'False', 'log_format': 'default', 'log_cache_events': 'False', 'version_check': 'True', 'no_print': 'None', 'partial_parse': 'True', 'log_path': 'logs', 'target_path': 'None', 'cache_selected_only': 'False', 'use_colors': 'True', 'printer_width': '80', 'empty': 'False', 'introspect': 'True', 'profiles_dir': '/home/sami/.dbt', 'invocation_command': 'dbt build', 'indirect_selection': 'eager', 'quiet': 'False', 'debug': 'False', 'warn_error': 'None', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'static_parser': 'True'}
+[0m01:54:44.930662 [error] [MainThread]: Encountered an error:
+Runtime Error
+  No dbt_project.yml found at expected path /home/sami/Desktop/energy/src/dbt_project.yml
+  Verify that each entry within packages.yml (and their transitive dependencies) contains a file named dbt_project.yml
+  
+[0m01:54:44.931578 [debug] [MainThread]: Resource report: {"command_name": "build", "command_success": false, "command_wall_clock_time": 0.062960744, "process_in_blocks": "0", "process_kernel_time": 0.1279, "process_mem_max_rss": "103400", "process_out_blocks": "16", "process_user_time": 1.322972}
+[0m01:54:44.932066 [debug] [MainThread]: Command `dbt build` failed at 01:54:44.931951 after 0.06 seconds
+[0m01:54:44.932470 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f665fb81810>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f665fb3ee70>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f665fcf1e10>]}
+[0m01:54:44.932892 [debug] [MainThread]: Flushing usage events
+[0m01:54:45.324715 [debug] [MainThread]: An error was encountered while trying to flush usage events

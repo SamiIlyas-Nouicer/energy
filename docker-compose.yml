@@ -50,7 +50,9 @@ services:
       - minio_data:/data
     networks:
       - energy_network
-  # --- Day 3: Spark Cluster (Updated to 3.5) ---
+
+  minio_data: # --- Day 3: Spark Cluster (Updated to 3.5) ---
+
   spark-master:
     image: apache/spark:3.5.0
     container_name: energy_spark_master
