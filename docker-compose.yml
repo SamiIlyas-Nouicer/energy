@@ -8,18 +8,22 @@ services:
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
+      - ZOOKEEPER_DATA_DIR=/tmp/zookeeper/data
+      - ZOOKEEPER_LOG_DIR=/tmp/zookeeper/log
     networks:
       - energy_network
 
   kafka:
     image: confluentinc/cp-kafka:7.6.0
     container_name: energy_kafka
+    depends_on:
+      - zookeeper
     ports:
       - "9092:9092"
     environment:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://energy_kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
@@ -51,8 +55,7 @@ services:
     networks:
       - energy_network
 
-  minio_data: # --- Day 3: Spark Cluster (Updated to 3.5) ---
-
+  # --- Day 3: Spark Cluster ---
   spark-master:
     image: apache/spark:3.5.0
     container_name: energy_spark_master
@@ -79,8 +82,25 @@ services:
       - "8082:8081"
     networks:
       - energy_network
+
+  # --- Day 5: MLflow Tracking Server ---
+  # --- Day 5: MLflow Tracking Server ---
+  # --- Day 5: MLflow Tracking Server (Official Image) ---
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: energy_mlflow
+    ports:
+      - "5000:5000"
+    command: >
+      mlflow server --backend-store-uri sqlite:////mlflow/mlflow.db --default-artifact-root mlflow-artifacts:/ --artifacts-destination /mlflow/artifacts --host 0.0.0.0
+    volumes:
+      - /mlflow:/mlflow
+    networks:
+      - energy_network
+
 volumes:
   minio_data:
+  mlflow_data:
 
 
 networks:

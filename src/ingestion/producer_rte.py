@@ -1,8 +1,8 @@
+from kafka import KafkaProducer
 import json
 import time
 import logging
 from datetime import datetime, timezone
-from kafka import KafkaProducer
 from dotenv import load_dotenv
 import sys
 import os
@@ -24,16 +24,13 @@ ENDPOINTS = {
     "rte.physical_flows": "https://digital.iservices.rte-france.com/open_api/physical_flow/v1/physical_flows",
 }
 
-# ── Kafka producer setup ──────────────────────────────────────────────────────
+# ── Kafka producer setup (Reverted to Normal) ─────────────────────────────────
 def make_producer():
     return KafkaProducer(
         bootstrap_servers=KAFKA_BROKER,
-        value_serializer=lambda v: json.dumps(v).encode("utf-8"),
-        key_serializer=lambda k: k.encode("utf-8"),
-        acks="all",           # wait for all replicas to confirm
-        retries=3,
+        value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+        retries=3
     )
-
 # ── Fetch one endpoint with retry ─────────────────────────────────────────────
 def fetch_with_retry(url, headers, max_retries=3):
     import requests
@@ -49,13 +46,13 @@ def fetch_with_retry(url, headers, max_retries=3):
     return None
 
 # ── Publish one API response to Kafka ─────────────────────────────────────────
+# ── Publish one API response to Kafka (Reverted to Normal) ────────────────────
 def publish(producer, topic, data):
     top_key = list(data.keys())[0]
     records = data[top_key]
     published = 0
 
     for record in records:
-        # Filter consumption: only keep REALISED records, skip forecasts
         if topic == "rte.consumption" and record.get("type") != "REALISED":
             continue
 
@@ -65,16 +62,12 @@ def publish(producer, topic, data):
             "payload": record,
         }
 
-        producer.send(
-            topic,
-            key=topic,
-            value=message,
-        )
+        # Back to the standard send() method
+        producer.send(topic, value=message)
         published += 1
 
     producer.flush()
     log.info(f"✅ Published {published} records to {topic}")
-
 # ── Main loop ─────────────────────────────────────────────────────────────────
 def main():
     log.info("Starting RTE producer...")
