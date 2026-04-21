@@ -1,0 +1,14 @@
+energy_platform:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ':memory:'
+      extensions:
+        - httpfs
+      settings:
+        s3_endpoint: 'localhost:9000'
+        s3_access_key_id: 'minioadmin'
+        s3_secret_access_key: 'minioadmin'
+        s3_use_ssl: false
+        s3_url_style: 'path'

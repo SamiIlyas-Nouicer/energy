@@ -1,18 +1,36 @@
+# Python
 .venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Secrets
 .env
-data/raw/*
-!data/raw/.gitkeep
-target/
-dbt_packages/
-.DS_Store
-*.deb
-*.deb
-*.zip
+
+# Data (large files)
 src/data/silver_export/
 src/data/gold.duckdb
 src/data/raw/*.zip
-__pycache__/
-.venv/
-*.pyc
+data/raw/*
+!data/raw/.gitkeep
+
+# Build artifacts
+target/
+dbt_packages/
+*.deb
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db
+
+# LibreOffice lock files
+*.~lock.*
+
+# Logs
+logs/*.log
+
+# dbt
+src/dbt/energy_platform/.user.yml
+src/dbt/energy_platform/package-lock.yml

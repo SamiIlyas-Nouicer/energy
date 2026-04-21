@@ -1,3 +1,9 @@
+{{ config(
+    materialized='external',
+    location="s3://gold/{{ this.name }}/",
+    format='parquet'
+) }}
+
 with base as (
     select * from {{ ref('stg_energy') }}
 ),

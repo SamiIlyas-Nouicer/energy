@@ -1,3 +1,4 @@
+
 with source as (
     select *
     from read_parquet('/home/sami/Desktop/energy/src/data/silver_export/*.parquet')

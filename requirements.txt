@@ -1,13 +1,31 @@
-requests
-python-dotenv
-kafka-python
+# French Energy Intelligence Platform — Pinned Dependencies
+# Generated: 2026-04-21 | Python 3.13
+
+# ── Streaming ─────────────────────────────────────────────────
+kafka-python-ng==2.2.3
+
+# ── HTTP & Environment ────────────────────────────────────────
+requests==2.33.1
+python-dotenv==1.2.2
+
+# ── Data Processing ───────────────────────────────────────────
+pandas==2.3.3
 pyspark==3.5.0
 delta-spark==3.0.0
-pandas
-dbt-duckdb
-mlflow
-scikit-learn
-fastapi
-uvicorn
-streamlit
-plotly
+
+# ── Storage / Gold Layer ──────────────────────────────────────
+duckdb==1.5.1
+dbt-duckdb==1.10.1
+
+# ── ML ────────────────────────────────────────────────────────
+scikit-learn==1.8.0
+lightgbm==4.6.0
+mlflow==3.11.1
+
+# ── API ───────────────────────────────────────────────────────
+fastapi==0.136.0
+uvicorn==0.44.0
+
+# ── Dashboard ─────────────────────────────────────────────────
+streamlit==1.56.0
+plotly==6.7.0

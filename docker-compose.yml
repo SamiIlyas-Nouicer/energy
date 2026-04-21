@@ -12,12 +12,18 @@ services:
       - ZOOKEEPER_LOG_DIR=/tmp/zookeeper/log
     networks:
       - energy_network
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "2181" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   kafka:
     image: confluentinc/cp-kafka:7.6.0
     container_name: energy_kafka
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     ports:
       - "9092:9092"
     environment:
@@ -28,6 +34,11 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
       - energy_network
+    healthcheck:
+      test: [ "CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -55,7 +66,7 @@ services:
     networks:
       - energy_network
 
-  # --- Day 3: Spark Cluster ---
+  # --- Spark Cluster ---
   spark-master:
     image: apache/spark:3.5.0
     container_name: energy_spark_master
@@ -84,24 +95,89 @@ services:
       - energy_network
 
   # --- Day 5: MLflow Tracking Server ---
-  # --- Day 5: MLflow Tracking Server ---
-  # --- Day 5: MLflow Tracking Server (Official Image) ---
   mlflow:
     image: ghcr.io/mlflow/mlflow:latest
     container_name: energy_mlflow
     ports:
       - "5000:5000"
     command: >
-      mlflow server --backend-store-uri sqlite:////mlflow/mlflow.db --default-artifact-root mlflow-artifacts:/ --artifacts-destination /mlflow/artifacts --host 0.0.0.0
+      mlflow server
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --default-artifact-root mlflow-artifacts:/
+      --artifacts-destination /mlflow/artifacts
+      --host 0.0.0.0
     volumes:
       - /mlflow:/mlflow
     networks:
       - energy_network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5000/health" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # --- Day 6: Prediction API ---
+  api:
+    build:
+      context: .
+      dockerfile: src/api/Dockerfile
+    container_name: energy_api
+    ports:
+      - "8000:8000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    depends_on:
+      mlflow:
+        condition: service_healthy
+    networks:
+      - energy_network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: on-failure
+
+  # --- Day 6: Streamlit Dashboard ---
+  dashboard:
+    build:
+      context: .
+      dockerfile: src/dashboard/Dockerfile
+    container_name: energy_dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - energy_network
+    restart: on-failure
+
+  # --- Day 6: Ingestion Layer ---
+  ingestion:
+    build:
+      context: .
+      dockerfile: src/ingestion/Dockerfile
+    container_name: energy_ingestion
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=energy_kafka:29092
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    env_file:
+      - .env
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - energy_network
+    restart: on-failure
 
 volumes:
   minio_data:
   mlflow_data:
-
 
 networks:
   energy_network:

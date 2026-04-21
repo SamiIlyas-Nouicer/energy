@@ -35,3 +35,6 @@ models:
       +materialized: view
     gold:
       +materialized: table
+
+vars:
+  gold_path: "s3://gold/"
