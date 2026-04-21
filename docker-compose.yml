@@ -138,16 +138,17 @@ services:
       retries: 5
     restart: on-failure
 
-  # --- Day 6: Streamlit Dashboard ---
+  # --- Day 6: Next.js Dashboard ---
   dashboard:
     build:
       context: .
-      dockerfile: src/dashboard/Dockerfile
+      dockerfile: src/dashboard-next/Dockerfile
     container_name: energy_dashboard
     ports:
-      - "8501:8501"
+      - "3000:3000"
     environment:
       - API_URL=http://api:8000
+      - NEXT_PUBLIC_API_URL=http://api:8000
     depends_on:
       api:
         condition: service_healthy
