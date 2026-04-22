@@ -1,0 +1,35 @@
+# ── Render Backend (FastAPI + DuckDB + LightGBM) ─────────────────────────────
+# Slim image with only what the API needs — no MLflow, no Spark, no Kafka
+FROM python:3.11-slim
+
+RUN useradd --create-home --shell /bin/bash appuser
+
+WORKDIR /app
+
+# Install only API dependencies (no MLflow, no Spark, no Streamlit)
+RUN pip install --no-cache-dir \
+    fastapi==0.136.0 \
+    uvicorn==0.44.0 \
+    pandas==2.3.3 \
+    duckdb==1.5.1 \
+    scikit-learn==1.8.0 \
+    lightgbm==4.6.0 \
+    joblib
+
+# Copy API code, ML code, data, and model
+COPY src/api/   ./src/api/
+COPY src/ml/    ./src/ml/
+COPY src/data/  ./src/data/
+
+# Create __init__.py so imports work
+RUN touch src/__init__.py src/api/__init__.py src/ml/__init__.py
+
+RUN chown -R appuser:appuser /app
+USER appuser
+
+EXPOSE 8000
+
+ENV PYTHONPATH=/app
+ENV DUCKDB_PATH=src/data/gold.duckdb
+
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

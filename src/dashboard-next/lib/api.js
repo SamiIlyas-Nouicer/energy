@@ -1,12 +1,19 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 export async function fetchAPI(path, options = {}) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...options,
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-  });
-  if (!res.ok) throw new Error(`API error: ${res.status}`);
-  return res.json();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      signal: controller.signal,
+      headers: { 'Content-Type': 'application/json', ...options.headers },
+    });
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    return res.json();
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 export const getEnergyMix = () => fetchAPI('/api/energy-mix');
@@ -21,5 +28,5 @@ export const getForecastActual = (start, end) => {
   return fetchAPI(`/api/forecast/actual${qs ? `?${qs}` : ''}`);
 };
 export const getPipelineHealth = () => fetchAPI('/api/pipeline-health');
-export const getAPIHealth = () => fetchAPI('/health').then(() => true).catch(() => false);
+export const getAPIHealth = () => fetchAPI('/health').then(d => ({ online: true, modelLoaded: d.model_loaded })).catch(() => ({ online: false, modelLoaded: false }));
 export const postPredict = (features) => fetchAPI('/predict', { method: 'POST', body: JSON.stringify(features) });

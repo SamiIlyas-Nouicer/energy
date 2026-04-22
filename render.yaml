@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: energy-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile.render
+    plan: free
+    envVars:
+      - key: DUCKDB_PATH
+        value: src/data/gold.duckdb
+      - key: PYTHONPATH
+        value: /app
+    healthCheckPath: /health

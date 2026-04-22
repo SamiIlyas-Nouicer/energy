@@ -21,24 +21,26 @@ export default function ForecastPage() {
   const [actualData, setActualData] = useState([]);
   const [forecastData, setForecastData] = useState([]);
   const [apiOnline, setApiOnline] = useState(false);
+  const [modelLoaded, setModelLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [forecasting, setForecasting] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchData = useCallback(async () => {
     try {
-      const [actual, health] = await Promise.all([getForecastActual(), getAPIHealth()]);
+      const actual = await getForecastActual();
       setActualData(actual.data);
-      setApiOnline(health);
       setError(null);
     } catch (e) { setError(e.message); }
     setLoading(false);
+    // Health check runs independently — never blocks data display
+    getAPIHealth().then(h => { setApiOnline(h.online); setModelLoaded(h.modelLoaded); }).catch(() => { setApiOnline(false); setModelLoaded(false); });
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
   const runForecast = async () => {
-    if (!apiOnline || !actualData.length) return;
+    if (!modelLoaded || !actualData.length) return;
     setForecasting(true);
     try {
       const lastActual = actualData[actualData.length - 1];
@@ -96,11 +98,16 @@ export default function ForecastPage() {
         <span className={`badge ${apiOnline ? 'badge-success' : 'badge-danger'}`}>
           {apiOnline ? <><CheckCircle size={12} /> API Online</> : <><XCircle size={12} /> API Offline</>}
         </span>
-        <button onClick={runForecast} disabled={!apiOnline || forecasting} style={{
+        {apiOnline && (
+          <span className={`badge ${modelLoaded ? 'badge-success' : 'badge-warning'}`}>
+            {modelLoaded ? <><CheckCircle size={12} /> Model Ready</> : <><Sparkles size={12} /> Model Loading</>}
+          </span>
+        )}
+        <button onClick={runForecast} disabled={!modelLoaded || forecasting} style={{
           padding: '8px 20px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--accent-cyan)',
-          background: 'rgba(56,189,248,0.1)', color: 'var(--accent-cyan)', cursor: apiOnline ? 'pointer' : 'not-allowed',
+          background: 'rgba(56,189,248,0.1)', color: 'var(--accent-cyan)', cursor: modelLoaded ? 'pointer' : 'not-allowed',
           fontSize: 13, fontWeight: 600, fontFamily: 'var(--font-body)', transition: 'all 0.2s',
-          opacity: apiOnline ? 1 : 0.4, display: 'flex', alignItems: 'center', gap: 6,
+          opacity: modelLoaded ? 1 : 0.4, display: 'flex', alignItems: 'center', gap: 6,
         }}>
           <Wand2 size={14} /> {forecasting ? 'Generating...' : 'Run 24h Forecast'}
         </button>
@@ -147,6 +154,14 @@ export default function ForecastPage() {
         <div className="glass-card" style={{ marginTop: 24, textAlign: 'center' }}>
           <p style={{ color: 'var(--text-secondary)', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
             <Terminal size={14} /> Start the API to generate forecasts: <code style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>uvicorn src.api.main:app --port 8000</code>
+          </p>
+        </div>
+      )}
+
+      {apiOnline && !modelLoaded && (
+        <div className="glass-card" style={{ marginTop: 24, textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <Terminal size={14} /> Train the model first: <code style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>python -m src.ml.train_local</code>
           </p>
         </div>
       )}

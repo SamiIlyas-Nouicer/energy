@@ -52,7 +52,7 @@ app = FastAPI(
     title="French Energy Intelligence — Prediction API",
     description=(
         "Production ML service for 30-minute-ahead electricity consumption "
-        "forecasting. Powered by a champion model tracked and registered in MLflow."
+        "forecasting. Powered by a LightGBM champion model."
     ),
     version="1.0.0",
     docs_url="/docs",
@@ -74,17 +74,19 @@ _model_load_error: str | None = None
 
 
 def _ensure_model():
-    """Load the model on first request, cache the result."""
+    """Load the model on first request. Uses local joblib (instant) with
+    MLflow fallback. Safe to call multiple times — caches after first load."""
     global _model_loaded, _model_load_error
-    if not _model_loaded:
-        try:
-            from src.ml.predict import _load_model
-            _load_model()
-            _model_loaded = True
-            _model_load_error = None
-        except Exception as exc:
-            _model_load_error = str(exc)
-            _model_loaded = False
+    if _model_loaded:
+        return
+    try:
+        from src.ml.predict import _load_model
+        _load_model()
+        _model_loaded = True
+        _model_load_error = None
+    except Exception as exc:
+        _model_load_error = str(exc)
+        _model_loaded = False
 
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
@@ -161,18 +163,16 @@ async def root() -> dict[str, Any]:
 async def health() -> HealthResponse:
     """
     Returns the service health status and whether the ML model is loaded.
-    A 503 is returned if the model failed to load.
+    Always returns 200 so the dashboard can distinguish between
+    'API reachable' and 'model ready'.
     """
     _ensure_model()
-    if not _model_loaded:
-        raise HTTPException(
-            status_code=503,
-            detail=f"Model not loaded: {_model_load_error}",
-        )
+    from src.ml.predict import _model_version, MODEL_JOBLIB_PATH
+    model_uri = MODEL_JOBLIB_PATH if _model_loaded else "models:/energy-forecast-prod/Production"
     return HealthResponse(
-        status="ok",
-        model_loaded=True,
-        model_uri="models:/energy-forecast-prod/Production",
+        status="ok" if _model_loaded else "degraded",
+        model_loaded=_model_loaded,
+        model_uri=model_uri,
         timestamp=datetime.now(timezone.utc).isoformat(),
     )
 

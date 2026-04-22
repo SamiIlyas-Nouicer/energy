@@ -1,0 +1,11 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm ci",
+  "outputDirectory": ".next",
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "${API_URL}/api/:path*" },
+    { "source": "/health", "destination": "${API_URL}/health" },
+    { "source": "/predict", "destination": "${API_URL}/predict" }
+  ]
+}
